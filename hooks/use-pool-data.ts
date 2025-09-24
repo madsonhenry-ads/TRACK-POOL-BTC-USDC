@@ -48,10 +48,12 @@ export function usePoolData() {
     const baseForFeeCalculation = entryToUpdate.initialLiquidity + entryToUpdate.contribution
     const feeReturnPercentage = baseForFeeCalculation > 0 ? (harvestedFees / baseForFeeCalculation) * 100 : 0
 
+    const newCumulativeFees = entryToUpdate.cumulativeFees + harvestedFees
+
     const updatedEntry = {
       ...entryToUpdate,
       weeklyFees: harvestedFees,
-      cumulativeFees: entryToUpdate.cumulativeFees + harvestedFees,
+      cumulativeFees: newCumulativeFees,
       currentLiquidity: entryToUpdate.currentLiquidity + harvestedFees,
       weeklyNetResult: harvestedFees, // Only fees since no price variation
       weeklyFeeReturnPercentage: feeReturnPercentage,
@@ -78,17 +80,14 @@ export function usePoolData() {
       const previousEntry = recalculatedEntries[i - 1]
       const currentEntry = recalculatedEntries[i]
 
-      const recalculated = calculateWeeklyEntry(
-        {
-          date: currentEntry.date,
-          weekNumber: currentEntry.weekNumber,
-          cumulativeFees: currentEntry.cumulativeFees,
-          contribution: currentEntry.contribution, // Use correct field name
-        },
-        previousEntry,
-      )
+      const initialLiquidity = previousEntry.currentLiquidity
+      const currentLiquidity = initialLiquidity + currentEntry.contribution + currentEntry.weeklyFees
 
-      recalculatedEntries[i] = { ...recalculated, id: currentEntry.id }
+      recalculatedEntries[i] = {
+        ...currentEntry,
+        initialLiquidity,
+        currentLiquidity,
+      }
     }
 
     return recalculatedEntries
@@ -98,7 +97,7 @@ export function usePoolData() {
     entries,
     kpis,
     addEntry,
-    updateEntry, // Added updateEntry to return
+    updateEntry,
     deleteEntry,
   }
 }

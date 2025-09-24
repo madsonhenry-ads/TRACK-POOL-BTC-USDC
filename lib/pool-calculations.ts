@@ -15,12 +15,12 @@ export function calculateWeeklyEntry(
 
   if (!previousEntry) {
     initialLiquidity = 0
-    weeklyFees = newEntry.cumulativeFees
-    currentLiquidity = newEntry.contribution + weeklyFees
+    weeklyFees = 0
+    currentLiquidity = newEntry.contribution
   } else {
     initialLiquidity = previousEntry.currentLiquidity
-    weeklyFees = newEntry.cumulativeFees - previousEntry.cumulativeFees
-    currentLiquidity = initialLiquidity + newEntry.contribution + weeklyFees
+    weeklyFees = 0
+    currentLiquidity = initialLiquidity + newEntry.contribution
   }
 
   // Price variation/IL is 0 when only dealing with contributions and fees
