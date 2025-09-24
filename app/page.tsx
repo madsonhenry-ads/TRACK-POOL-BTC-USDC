@@ -4,14 +4,15 @@ import { Button } from "@/components/ui/button"
 import { KPIDashboard } from "@/components/kpi-dashboard"
 import { ContributionModal } from "@/components/contribution-modal"
 import { HarvestModal } from "@/components/harvest-modal"
+import { DataManagementModal } from "@/components/data-management-modal"
 import { LiquidityEvolutionChart } from "@/components/liquidity-evolution-chart"
 import { WeeklyPerformanceChart } from "@/components/weekly-performance-chart"
 import { HistoricalDataTable } from "@/components/historical-data-table"
 import { usePoolData } from "@/hooks/use-pool-data"
-import { Plus, TrendingUp } from "lucide-react"
+import { Plus, TrendingUp, Database } from "lucide-react"
 
 export default function HomePage() {
-  const { entries, kpis, addEntry, updateEntry, deleteEntry } = usePoolData()
+  const { entries, kpis, addEntry, updateEntry, deleteEntry, refreshData } = usePoolData()
 
   return (
     <div className="min-h-screen bg-background">
@@ -36,6 +37,12 @@ export default function HomePage() {
                   Add Harvest Fee Weekly
                 </Button>
               </HarvestModal>
+              <DataManagementModal onDataImported={refreshData}>
+                <Button variant="outline" className="flex items-center gap-2 bg-transparent">
+                  <Database className="h-4 w-4" />
+                  Import/Export
+                </Button>
+              </DataManagementModal>
             </div>
           </div>
         </div>

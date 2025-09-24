@@ -21,6 +21,12 @@ export function usePoolData() {
     setKPIs(calculateKPIs(loadedEntries))
   }, [])
 
+  const refreshData = () => {
+    const loadedEntries = loadWeeklyEntries()
+    setEntries(loadedEntries)
+    setKPIs(calculateKPIs(loadedEntries))
+  }
+
   const addEntry = (entryData: {
     date: string
     weekNumber: number
@@ -99,5 +105,6 @@ export function usePoolData() {
     addEntry,
     updateEntry,
     deleteEntry,
+    refreshData, // Added refreshData to return object
   }
 }
