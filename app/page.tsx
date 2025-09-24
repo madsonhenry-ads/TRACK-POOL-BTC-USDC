@@ -1,0 +1,69 @@
+"use client"
+
+import { Button } from "@/components/ui/button"
+import { KPIDashboard } from "@/components/kpi-dashboard"
+import { ContributionModal } from "@/components/contribution-modal"
+import { HarvestModal } from "@/components/harvest-modal"
+import { LiquidityEvolutionChart } from "@/components/liquidity-evolution-chart"
+import { WeeklyPerformanceChart } from "@/components/weekly-performance-chart"
+import { HistoricalDataTable } from "@/components/historical-data-table"
+import { usePoolData } from "@/hooks/use-pool-data"
+import { Plus, TrendingUp } from "lucide-react"
+
+export default function HomePage() {
+  const { entries, kpis, addEntry, updateEntry, deleteEntry } = usePoolData()
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="border-b bg-card">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground">Liquidity Pool Tracker: BTC/USDC</h1>
+              <p className="text-muted-foreground mt-1">Track your DeFi pool performance and profitability</p>
+            </div>
+            <div className="flex gap-3">
+              <ContributionModal onAddEntry={addEntry}>
+                <Button className="flex items-center gap-2">
+                  <Plus className="h-4 w-4" />
+                  Add Weekly Record
+                </Button>
+              </ContributionModal>
+              <HarvestModal onUpdateEntry={updateEntry} existingEntries={entries}>
+                <Button variant="outline" className="flex items-center gap-2 bg-transparent">
+                  <TrendingUp className="h-4 w-4" />
+                  Add Harvest Fee Weekly
+                </Button>
+              </HarvestModal>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-8 space-y-8">
+        {/* KPI Cards */}
+        <section>
+          <h2 className="text-xl font-semibold mb-4">Performance Overview</h2>
+          <KPIDashboard kpis={kpis} />
+        </section>
+
+        {/* Charts Section */}
+        <section>
+          <h2 className="text-xl font-semibold mb-4">Performance Charts</h2>
+          <div className="grid gap-6 md:grid-cols-2">
+            <LiquidityEvolutionChart entries={entries} />
+            <WeeklyPerformanceChart entries={entries} />
+          </div>
+        </section>
+
+        {/* Historical Data Table */}
+        <section>
+          <h2 className="text-xl font-semibold mb-4">Historical Data</h2>
+          <HistoricalDataTable entries={entries} onDeleteEntry={deleteEntry} />
+        </section>
+      </main>
+    </div>
+  )
+}
