@@ -70,7 +70,8 @@ export function ContributionModal({ onAddEntry, children }: ContributionModalPro
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="date">Date *</Label>
-            <Popover>
+            {/* --- ALTERAÇÃO APLICADA AQUI --- */}
+            <Popover modal={false}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
