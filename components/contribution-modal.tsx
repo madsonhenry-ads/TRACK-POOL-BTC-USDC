@@ -25,11 +25,16 @@ interface ContributionModalProps {
 
 export function ContributionModal({ onAddEntry, children }: ContributionModalProps) {
   const [open, setOpen] = useState(false)
-  const [date, setDate] = useState<Date>(new Date())
+  const [date, setDate] = useState<Date | undefined>(undefined)
   const [contribution, setContribution] = useState("")
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!date) {
+      alert("Por favor, selecione uma data")
+      return
+    }
 
     // Calculate week number (simple implementation - weeks since start of year)
     const startOfYear = new Date(date.getFullYear(), 0, 1)
@@ -42,13 +47,21 @@ export function ContributionModal({ onAddEntry, children }: ContributionModalPro
       contribution: Number.parseFloat(contribution) || 0,
     })
 
-    // Reset form
     setContribution("")
+    setDate(undefined)
     setOpen(false)
   }
 
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen)
+    if (newOpen) {
+      setContribution("")
+      setDate(undefined)
+    }
+  }
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -56,7 +69,7 @@ export function ContributionModal({ onAddEntry, children }: ContributionModalPro
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="date">Date</Label>
+            <Label htmlFor="date">Date *</Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -64,13 +77,22 @@ export function ContributionModal({ onAddEntry, children }: ContributionModalPro
                   className={cn("w-full justify-start text-left font-normal", !date && "text-muted-foreground")}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, "PPP") : <span>Pick a date</span>}
+                  {date ? format(date, "PPP") : <span>Selecione uma data</span>}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar mode="single" selected={date} onSelect={(date) => date && setDate(date)} initialFocus />
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  initialFocus
+                  fromYear={2020}
+                  toYear={2030}
+                  captionLayout="dropdown-buttons"
+                />
               </PopoverContent>
             </Popover>
+            <p className="text-xs text-muted-foreground">Selecione a data da semana que deseja registrar</p>
           </div>
 
           <div className="space-y-2">
@@ -93,7 +115,9 @@ export function ContributionModal({ onAddEntry, children }: ContributionModalPro
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit">Save Contribution</Button>
+            <Button type="submit" disabled={!date || !contribution}>
+              Save Contribution
+            </Button>
           </div>
         </form>
       </DialogContent>

@@ -71,11 +71,8 @@ export function HistoricalDataTable({ entries, onDeleteEntry }: HistoricalDataTa
                 <TableHead>Date</TableHead>
                 <TableHead className="text-right">Liquidity (USD)</TableHead>
                 <TableHead className="text-right">Weekly Contribution</TableHead>
-                <TableHead className="text-right">Fees this Week</TableHead>
-                <TableHead className="text-right">Price Variation / IL</TableHead>
                 <TableHead className="text-right">Total Weekly P/L</TableHead>
                 <TableHead className="text-right">Fee Return %</TableHead>
-                <TableHead className="text-right">Total Return %</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -90,12 +87,6 @@ export function HistoricalDataTable({ entries, onDeleteEntry }: HistoricalDataTa
                       {formatCurrency(entry.contribution)}
                     </span>
                   </TableCell>
-                  <TableCell className="text-right font-mono">{formatCurrency(entry.weeklyFees)}</TableCell>
-                  <TableCell className="text-right font-mono">
-                    <span className={entry.priceVariation >= 0 ? "text-green-600" : "text-red-600"}>
-                      {formatCurrency(entry.priceVariation)}
-                    </span>
-                  </TableCell>
                   <TableCell className="text-right font-mono">
                     <span className={entry.weeklyNetResult >= 0 ? "text-green-600" : "text-red-600"}>
                       {formatCurrency(entry.weeklyNetResult)}
@@ -104,11 +95,6 @@ export function HistoricalDataTable({ entries, onDeleteEntry }: HistoricalDataTa
                   <TableCell className="text-right">
                     <Badge variant={getPercentageBadgeVariant(entry.weeklyFeeReturnPercentage)}>
                       {formatPercentage(entry.weeklyFeeReturnPercentage)}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Badge variant={getPercentageBadgeVariant(entry.weeklyTotalReturnPercentage)}>
-                      {formatPercentage(entry.weeklyTotalReturnPercentage)}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">

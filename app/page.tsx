@@ -8,6 +8,7 @@ import { DataManagementModal } from "@/components/data-management-modal"
 import { LiquidityEvolutionChart } from "@/components/liquidity-evolution-chart"
 import { WeeklyPerformanceChart } from "@/components/weekly-performance-chart"
 import { HistoricalDataTable } from "@/components/historical-data-table"
+import { ImpermanentLossCard } from "@/components/impermanent-loss-card"
 import { usePoolData } from "@/hooks/use-pool-data"
 import { Plus, TrendingUp, Database } from "lucide-react"
 
@@ -54,6 +55,12 @@ export default function HomePage() {
         <section>
           <h2 className="text-xl font-semibold mb-4">Performance Overview</h2>
           <KPIDashboard kpis={kpis} />
+        </section>
+
+        {/* Impermanent Loss Calculator Section */}
+        <section>
+          <h2 className="text-xl font-semibold mb-4">Risk Analysis</h2>
+          <ImpermanentLossCard totalLiquidity={kpis.totalLiquidity} />
         </section>
 
         {/* Charts Section */}

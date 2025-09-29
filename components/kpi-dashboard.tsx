@@ -20,7 +20,7 @@ export function KPIDashboard({ kpis }: KPIDashboardProps) {
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <KPICard
         title="Total Liquidity"
         value={formatCurrency(kpis.totalLiquidity)}
@@ -31,12 +31,6 @@ export function KPIDashboard({ kpis }: KPIDashboardProps) {
         title="Total Invested"
         value={formatCurrency(kpis.totalInvested)}
         description="Sum of all contributions"
-      />
-
-      <KPICard
-        title="Total Fees Generated"
-        value={formatCurrency(kpis.totalFeesGenerated)}
-        description="Cumulative fees earned to date"
       />
 
       <KPICard
