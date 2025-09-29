@@ -124,3 +124,14 @@
     @apply bg-background text-foreground;
   }
 }
+/* src/app/globals.css */
+
+/*
+  FIX para o Popover dentro de um Dialog da Shadcn UI.
+  A biblioteca calcula um `transform` incorreto que joga o popover
+  para fora da tela. Esta regra força a remoção desse transform,
+  confiando apenas nas propriedades `top` e `left` para o posicionamento.
+*/
+.popover-in-dialog[data-radix-popper-content-wrapper] {
+  transform: none !important;
+}
