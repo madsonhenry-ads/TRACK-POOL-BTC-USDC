@@ -140,7 +140,8 @@
   e força o calendário a aparecer centralizado na tela.
 */
 .popover-in-dialog[data-radix-popper-content-wrapper] {
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
+  transform: translate(50px, 50%) !important;
+  /* Você ainda pode precisar forçar o top e left */
+  top: 0 !important;
+  left: 0 !important;
 }
