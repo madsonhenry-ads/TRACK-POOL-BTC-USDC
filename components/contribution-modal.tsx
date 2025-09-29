@@ -85,7 +85,7 @@ export function ContributionModal({ onAddEntry, children }: ContributionModalPro
                 </Button>
               </PopoverTrigger>
               {/* Adicionamos uma classe customizada aqui para o nosso CSS pegar */}
-              <PopoverContent className="w-auto p-0 popover-in-dialog" align="start" sideOffset={4}>
+              <PopoverContent className="w-auto p-0 popover-in-dialog" align="start">
                 <Calendar
                   mode="single"
                   selected={date}
