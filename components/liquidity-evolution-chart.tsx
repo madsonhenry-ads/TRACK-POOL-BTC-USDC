@@ -39,8 +39,6 @@ export function LiquidityEvolutionChart({ entries }: LiquidityEvolutionChartProp
     (a, b) => a.weekNumber - b.weekNumber
   );
 
-  // --- ALTERAÇÃO 1: CALCULAR LARGURA MÍNIMA DO GRÁFICO ---
-  // Defina um espaço por semana (ex: 60px). O Math.max garante uma largura mínima de 400px.
   const minChartWidth = Math.max(400, chartData.length * 60);
 
   const formatCurrency = (value: number) => {
@@ -57,7 +55,7 @@ export function LiquidityEvolutionChart({ entries }: LiquidityEvolutionChartProp
       <Card>
         <CardHeader>
           <CardTitle>Weekly P/L Evolution</CardTitle>
-        </Header>
+        </CardHeader> {/* <-- CORRIGIDO AQUI */}
         <CardContent className="h-80 flex items-center justify-center">
           <p className="text-muted-foreground">No data available. Add your first weekly record to see the chart.</p>
         </CardContent>
@@ -69,16 +67,14 @@ export function LiquidityEvolutionChart({ entries }: LiquidityEvolutionChartProp
     <Card>
       <CardHeader>
         <CardTitle>Weekly P/L Evolution</CardTitle>
-      </CardHeader>
+      </CardHeader> {/* <-- CORRIGIDO AQUI */}
       <CardContent>
-        {/* --- ALTERAÇÃO 2: ADICIONAR O CONTÊINER DE ROLAGEM --- */}
         <div className="w-full overflow-x-auto">
           <ChartContainer config={chartConfig} style={{ minWidth: `${minChartWidth}px` }} className="h-[300px]">
-            {/* --- ALTERAÇÃO 3: PASSAR LARGURA E ALTURA PARA O LINECHART --- */}
             <LineChart
               data={chartData}
-              width={minChartWidth} // Largura dinâmica
-              height={300}        // Altura fixa
+              width={minChartWidth}
+              height={300}
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="week" tick={{ fontSize: 12 }} />
