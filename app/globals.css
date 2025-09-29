@@ -139,9 +139,22 @@
   Anula os estilos inline incorretos calculados pela biblioteca
   e força o calendário a aparecer centralizado na tela.
 */
-.popover-in-dialog[data-radix-popper-content-wrapper] {
-  transform: translate(50px, 50%) !important;
-  /* Você ainda pode precisar forçar o top e left */
+/*
+  FIX DEFINITIVO para o Popover dentro de um Dialog.
+  Seleciona o wrapper (`[data-radix...]`) que :has() um filho 
+  com a nossa classe customizada (`.popover-in-dialog`) e
+  sobrescreve o transform incorreto.
+*/
+[data-radix-popper-content-wrapper]:has(.popover-in-dialog) {
+  /* Opção 1: Centralização perfeita (Recomendado) */
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+
+  /* Opção 2: Seus valores exatos (descomente se preferir) */
+  /*
   top: 0 !important;
   left: 0 !important;
+  transform: translate(50px, 50%) !important;
+  */
 }
