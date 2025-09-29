@@ -1,8 +1,8 @@
 "use client"
 
 import type React from "react"
-
-import { useState } from "react"
+// 1. Remover useRef, não é mais necessário
+import { useState } from "react" 
 import {
   Dialog,
   DialogContent,
@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Calendar } from "@/components/ui/calendar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Popover, PopoverContent, PopoverPortal, PopoverTrigger } from "@/components/ui/popover"
 import { CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
@@ -34,8 +34,10 @@ export function ContributionModal({ onAddEntry, children }: ContributionModalPro
   const [open, setOpen] = useState(false)
   const [date, setDate] = useState<Date | undefined>(undefined)
   const [contribution, setContribution] = useState("")
-  // 1. Adicionar um novo estado para o Popover do calendário
   const [isCalendarOpen, setIsCalendarOpen] = useState(false)
+  
+  // 2. Usar useState para armazenar o nó do DOM do DialogContent
+  const [dialogContentNode, setDialogContentNode] = useState<HTMLDivElement | null>(null)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -68,16 +70,16 @@ export function ContributionModal({ onAddEntry, children }: ContributionModalPro
     }
   }
   
-  // 3. Criar uma função para lidar com a seleção de data
   const handleDateSelect = (selectedDate: Date | undefined) => {
     setDate(selectedDate)
-    setIsCalendarOpen(false) // Fecha o calendário após a seleção
+    setIsCalendarOpen(false) 
   }
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      {/* 3. Usar a função de state `setDialogContentNode` como a ref */}
+      <DialogContent ref={setDialogContentNode} className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add Weekly Contribution</DialogTitle>
           <DialogDescription>
@@ -87,7 +89,6 @@ export function ContributionModal({ onAddEntry, children }: ContributionModalPro
         <form onSubmit={handleSubmit} className="space-y-4 pt-4">
           <div className="space-y-2">
             <Label htmlFor="date">Date *</Label>
-            {/* 2. Passar o controle de estado para o Popover */}
             <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen} modal={false}>
               <PopoverTrigger asChild>
                 <Button
@@ -98,18 +99,23 @@ export function ContributionModal({ onAddEntry, children }: ContributionModalPro
                   {date ? format(date, "PPP") : <span>Selecione uma data</span>}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0 z-[60]" align="start">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  // 4. Usar a nova função no onSelect
-                  onSelect={handleDateSelect}
-                  initialFocus
-                  fromYear={2020}
-                  toYear={2030}
-                  captionLayout="dropdown-buttons"
-                />
-              </PopoverContent>
+              
+              {/* 4. Renderizar o Portal condicionalmente, somente quando o container existir */}
+              {dialogContentNode && (
+                <PopoverPortal container={dialogContentNode}>
+                  <PopoverContent className="w-auto p-0 z-[60]" align="start" sideOffset={4}>
+                    <Calendar
+                      mode="single"
+                      selected={date}
+                      onSelect={handleDateSelect}
+                      initialFocus
+                      fromYear={2020}
+                      toYear={2030}
+                      captionLayout="dropdown-buttons"
+                    />
+                  </PopoverContent>
+                </PopoverPortal>
+              )}
             </Popover>
             <p className="text-xs text-muted-foreground">Selecione a data da semana que deseja registrar</p>
           </div>
