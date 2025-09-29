@@ -132,6 +132,15 @@
   para fora da tela. Esta regra força a remoção desse transform,
   confiando apenas nas propriedades `top` e `left` para o posicionamento.
 */
+/* Em src/app/globals.css */
+
+/*
+  FIX FORÇADO para o Popover dentro de um Dialog.
+  Anula os estilos inline incorretos calculados pela biblioteca
+  e força o calendário a aparecer centralizado na tela.
+*/
 .popover-in-dialog[data-radix-popper-content-wrapper] {
-  transform: none !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
 }
