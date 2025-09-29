@@ -3,7 +3,14 @@
 import type React from "react"
 
 import { useState } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription, // 1. Importar DialogDescription
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -36,14 +43,13 @@ export function ContributionModal({ onAddEntry, children }: ContributionModalPro
       return
     }
 
-    // Calculate week number (simple implementation - weeks since start of year)
     const startOfYear = new Date(date.getFullYear(), 0, 1)
     const weekNumber = Math.ceil(((date.getTime() - startOfYear.getTime()) / 86400000 + startOfYear.getDay() + 1) / 7)
 
     onAddEntry({
       date: format(date, "yyyy-MM-dd"),
       weekNumber,
-      cumulativeFees: 0, // No fees in contribution entry
+      cumulativeFees: 0,
       contribution: Number.parseFloat(contribution) || 0,
     })
 
@@ -66,11 +72,15 @@ export function ContributionModal({ onAddEntry, children }: ContributionModalPro
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add Weekly Contribution</DialogTitle>
+          {/* 2. Adicionar a descrição para corrigir o warning de acessibilidade */}
+          <DialogDescription>
+            Enter the date and amount for your weekly contribution.
+          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
           <div className="space-y-2">
             <Label htmlFor="date">Date *</Label>
-            {/* --- ALTERAÇÃO APLICADA AQUI --- */}
+            {/* 3. Manter a correção modal={false} */}
             <Popover modal={false}>
               <PopoverTrigger asChild>
                 <Button
@@ -81,7 +91,8 @@ export function ContributionModal({ onAddEntry, children }: ContributionModalPro
                   {date ? format(date, "PPP") : <span>Selecione uma data</span>}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
+              {/* 4. Adicionar o z-index para garantir a visibilidade */}
+              <PopoverContent className="w-auto p-0 z-[60]" align="start">
                 <Calendar
                   mode="single"
                   selected={date}
