@@ -6,7 +6,7 @@ import { useState } from "react"
 import {
   Dialog,
   DialogContent,
-  DialogDescription, // 1. Importar DialogDescription
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -34,6 +34,8 @@ export function ContributionModal({ onAddEntry, children }: ContributionModalPro
   const [open, setOpen] = useState(false)
   const [date, setDate] = useState<Date | undefined>(undefined)
   const [contribution, setContribution] = useState("")
+  // 1. Adicionar um novo estado para o Popover do calendário
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -65,6 +67,12 @@ export function ContributionModal({ onAddEntry, children }: ContributionModalPro
       setDate(undefined)
     }
   }
+  
+  // 3. Criar uma função para lidar com a seleção de data
+  const handleDateSelect = (selectedDate: Date | undefined) => {
+    setDate(selectedDate)
+    setIsCalendarOpen(false) // Fecha o calendário após a seleção
+  }
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -72,7 +80,6 @@ export function ContributionModal({ onAddEntry, children }: ContributionModalPro
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add Weekly Contribution</DialogTitle>
-          {/* 2. Adicionar a descrição para corrigir o warning de acessibilidade */}
           <DialogDescription>
             Enter the date and amount for your weekly contribution.
           </DialogDescription>
@@ -80,8 +87,8 @@ export function ContributionModal({ onAddEntry, children }: ContributionModalPro
         <form onSubmit={handleSubmit} className="space-y-4 pt-4">
           <div className="space-y-2">
             <Label htmlFor="date">Date *</Label>
-            {/* 3. Manter a correção modal={false} */}
-            <Popover modal={false}>
+            {/* 2. Passar o controle de estado para o Popover */}
+            <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen} modal={false}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
@@ -91,12 +98,12 @@ export function ContributionModal({ onAddEntry, children }: ContributionModalPro
                   {date ? format(date, "PPP") : <span>Selecione uma data</span>}
                 </Button>
               </PopoverTrigger>
-              {/* 4. Adicionar o z-index para garantir a visibilidade */}
               <PopoverContent className="w-auto p-0 z-[60]" align="start">
                 <Calendar
                   mode="single"
                   selected={date}
-                  onSelect={setDate}
+                  // 4. Usar a nova função no onSelect
+                  onSelect={handleDateSelect}
                   initialFocus
                   fromYear={2020}
                   toYear={2030}
