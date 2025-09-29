@@ -46,10 +46,9 @@ export function validateImportData(data: any): data is ExportData {
     return false
   }
 
-  // Validate each entry structure
   for (const entry of data.entries) {
     if (!entry.id || !entry.date || typeof entry.weekNumber !== "number") {
-      return false
+      continue // Skip invalid entries instead of failing completely
     }
 
     const requiredFields = [
@@ -65,8 +64,8 @@ export function validateImportData(data: any): data is ExportData {
     ]
 
     for (const field of requiredFields) {
-      if (typeof entry[field] !== "number") {
-        return false
+      if (typeof entry[field] !== "number" || !isFinite(entry[field])) {
+        continue // Skip entries with invalid numeric fields
       }
     }
   }
@@ -82,14 +81,34 @@ export function importData(jsonString: string, replaceExisting = false): WeeklyE
       throw new Error("Formato de dados inválido")
     }
 
-    let finalEntries: WeeklyEntry[] = data.entries
+    const validEntries = data.entries.filter((entry: any) => {
+      if (!entry.id || !entry.date || typeof entry.weekNumber !== "number") {
+        return false
+      }
+
+      const requiredFields = [
+        "currentLiquidity",
+        "cumulativeFees",
+        "contribution",
+        "initialLiquidity",
+        "weeklyFees",
+        "priceVariation",
+        "weeklyNetResult",
+        "weeklyFeeReturnPercentage",
+        "weeklyTotalReturnPercentage",
+      ]
+
+      return requiredFields.every((field) => typeof entry[field] === "number" && isFinite(entry[field]))
+    })
+
+    let finalEntries: WeeklyEntry[] = validEntries
 
     if (!replaceExisting) {
       const existingEntries = loadWeeklyEntries()
       const existingIds = new Set(existingEntries.map((entry) => entry.id))
 
       // Only add entries that don't already exist
-      const newEntries = data.entries.filter((entry: WeeklyEntry) => !existingIds.has(entry.id))
+      const newEntries = validEntries.filter((entry: WeeklyEntry) => !existingIds.has(entry.id))
       finalEntries = [...existingEntries, ...newEntries]
 
       // Sort by week number
@@ -99,7 +118,6 @@ export function importData(jsonString: string, replaceExisting = false): WeeklyE
     saveWeeklyEntries(finalEntries)
     return finalEntries
   } catch (error) {
-    console.error("Failed to import data:", error)
     if (error instanceof Error) {
       throw error
     }
